@@ -1,0 +1,265 @@
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  color: #f2eee8;
+  background: #55004f;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-page {
+  width: min(1120px, 100% - 40px);
+  margin: 0 auto;
+  padding: 64px 0;
+}
+
+/* Home page introduction */
+.hero {
+  padding: 64px 0 80px;
+}
+
+.eyebrow {
+  color: #04914a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.hero h1 {
+  margin: 20px 0;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  font-weight: 750;
+}
+
+.hero-description {
+  max-width: 600px;
+  color: #bdb5aa;
+  font-size: 1.08rem;
+  line-height: 1.8;
+}
+
+/* Home page buttons */
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.button-primary,
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 7px;
+  font-weight: 700;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.button-primary {
+  color: #171310;
+  background: #fbfbfb;
+}
+
+.button-primary:hover {
+  background: #f08a62;
+}
+
+.button-secondary {
+  color: #f2eee8;
+  border: 1px solid #494139;
+  background: #211e1a;
+}
+
+.button-secondary:hover {
+  background: #302922;
+}
+
+.button-primary:hover,
+.button-secondary:hover {
+  transform: translateY(-2px);
+}
+
+/* Feature cards */
+.features h2 {
+  margin-bottom: 24px;
+  font-size: 1.7rem;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  padding: 26px;
+  border: 1px solid #39332d;
+  border-radius: 10px;
+  background: #1d1a17;
+}
+
+.feature-icon {
+  font-size: 2rem;
+}
+
+.feature-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+}
+
+.feature-card p {
+  min-height: 84px;
+  color: #bdb5aa;
+  line-height: 1.7;
+}
+
+.feature-card a {
+  display: inline-block;
+  margin-top: 12px;
+  color: #e87850;
+  font-weight: 700;
+}
+
+.feature-card a:hover {
+  color: #f08a62;
+}
+
+/* Keyboard accessibility */
+a:focus-visible {
+  outline: 3px solid #e87850;
+  outline-offset: 4px;
+}
+
+/* Mobile layout */
+@media (max-width: 700px) {
+  .home-page {
+    padding-top: 28px;
+  }
+
+  .hero {
+    padding: 40px 0 56px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card p {
+    min-height: auto;
+  }
+
+  .home-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+
+/* Basic page styling */
+.page {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+
+.page h1 {
+  margin-bottom: 8px;
+}
+
+.page p {
+  color: #555;
+  line-height: 1.5;
+}
+
+/* White sections */
+.card {
+  background: white;
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* Form labels */
+.page label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: bold;
+}
+
+/* Form fields */
+.page input,
+.page select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+/* Buttons */
+.page button {
+  padding: 10px 16px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.page button:hover {
+  background: #b32a2a;
+}
+
+/* Expense table */
+.page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.page th,
+.page td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.page th {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Keep the table usable on small screens */
+.page .card {
+  overflow-x: auto;
+}

@@ -1,0 +1,99 @@
+
+/* Page headings and description */
+.concerts-header,
+.concerts-description {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* Sections on the Concerts page */
+main > section {
+    margin: 32px 20px;
+}
+
+/* Responsive grid for concert cards */
+.concert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* Individual concert cards */
+.concert-card {
+    background-color: #201e1b;
+    border: 1px solid #403a35;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Concert images */
+.concert-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+/* Keep images and card content within their cards */
+.concert-card img {
+    max-width: 100%;
+}
+
+/* Ticket links */
+.concert-card a {
+    color: #e8b878;
+    overflow-wrap: anywhere;
+}
+
+.concert-card a:hover {
+    color: #ffd49c;
+}
+
+/* Search form */
+main > section form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+main > section input {
+    max-width: 100%;
+    padding: 10px;
+    border: 1px solid #403a35;
+    border-radius: 6px;
+}
+
+/* Smaller screens */
+@media (max-width: 600px) {
+    .concerts-header,
+    .concerts-description {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    main > section {
+        margin: 24px 16px;
+    }
+
+    .concert-card {
+        padding: 16px;
+    }
+
+    main > section form {
+        align-items: stretch;
+    }
+
+    main > section input {
+        flex: 1 1 100%;
+    }
+}
+
+/* In case the image doesnt work for ticketmaster*/
