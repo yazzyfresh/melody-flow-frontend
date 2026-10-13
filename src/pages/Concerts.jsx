@@ -1,182 +1,298 @@
-
+import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
-    getConcerts,
+    getSavedConcerts,
+    removeSavedConcert,
     searchTicketmasterEvents,
-} from "../services/concertService";
+} from "../services/ConcertService";
 import ConcertCard from "../components/ConcertCard";
 import "./Concerts.css";
 
 function Concerts() {
-    // Concerts stored in our MySQL database
     const [concerts, setConcerts] = useState([]);
-
-    // Real events returned by Ticketmaster
+    const navigate = useNavigate();
     const [ticketmasterEvents, setTicketmasterEvents] = useState([]);
-    const [city, setCity] = useState("Tampa");
+    const [city, setCity] = useState("");
     const [ticketmasterLoading, setTicketmasterLoading] = useState(false);
     const [ticketmasterError, setTicketmasterError] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [removingId, setRemovingId] = useState(null);
+    const [removeError, setRemoveError] = useState("");
 
-    // Load concerts saved in our database
-    useEffect(() => {
-        async function loadConcerts() {
-            try {
-                const data = await getConcerts();
-                setConcerts(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
+    async function loadSavedConcerts() {
+        try {
+            const data = await getSavedConcerts();
+            setConcerts(data);
+            setError("");
+        } catch (err) {
+            setError(err.message || "Failed to load saved concerts.");
+        } finally {
+            setLoading(false);
         }
+    }
 
-        loadConcerts();
+    useEffect(() => {
+        loadSavedConcerts();
     }, []);
 
-    // Search Ticketmaster when the user submits the city
     async function handleTicketmasterSearch(event) {
         event.preventDefault();
 
+        const searchCity = city.trim();
+
+        if (!searchCity) {
+            setTicketmasterError("Please enter a city to search.");
+            return;
+        }
+
         setTicketmasterLoading(true);
         setTicketmasterError("");
+        setTicketmasterEvents([]);
 
         try {
-            const data = await searchTicketmasterEvents(city);
+            const data = await searchTicketmasterEvents(searchCity);
             const events = data?._embedded?.events ?? [];
 
             setTicketmasterEvents(events);
 
             if (events.length === 0) {
                 setTicketmasterError(
-                    `No Ticketmaster events were found for ${city}. Try another city.`
+                    `No Ticketmaster events were found for ${searchCity}. Try another city.`
                 );
             }
         } catch (err) {
-            setTicketmasterEvents([]);
-            setTicketmasterError(err.message);
+            setTicketmasterError(
+                err.message || "Unable to load concerts. Please try again."
+            );
         } finally {
             setTicketmasterLoading(false);
         }
     }
 
+    async function handleRemoveConcert(savedConcertId) {
+        const confirmed = window.confirm(
+            "Are you sure you want to remove this saved concert?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        setRemovingId(savedConcertId);
+        setRemoveError("");
+
+        try {
+            await removeSavedConcert(savedConcertId);
+
+            // Immediately remove the deleted concert from the screen.
+            setConcerts((currentConcerts) =>
+                currentConcerts.filter(
+                    (savedConcert) => savedConcert.id !== savedConcertId
+                )
+            );
+
+
+            // Make sure the error message is cleared.
+            setRemoveError("");
+        } catch (err) {
+            setRemoveError(
+                err.message || "Unable to remove this saved concert."
+            );
+        } finally {
+            setRemovingId(null);
+        }
+    }
+
     if (loading) {
-        return <p>Loading concerts...</p>;
+        return (
+            <main className="concerts-page">
+                <p className="concerts-status">Loading saved concerts...</p>
+            </main>
+        );
     }
 
     if (error) {
         return (
-            <div>
-                <h1>Discover Concerts</h1>
-                <p role="alert">{error}</p>
-            </div>
+            <main className="concerts-page">
+                <h1 className="concerts-header">Discover Concerts</h1>
+                <p className="concerts-error" role="alert">
+                    {error}
+                </p>
+            </main>
         );
     }
 
     return (
-        <main>
-            <h1 className="concerts-header">Discover Concerts</h1>
+        <main className="concerts-page">
+            <header className="concerts-intro">
+                <p className="concerts-eyebrow">YOUR NEXT NIGHT OUT</p>
+                <h1 className="concerts-header">Discover Concerts</h1>
+                <p className="concerts-description">
+                    Find your next live music experience, one show at a time.
+                </p>
+            </header>
 
-            <p className="concerts-description">
-                Browse concerts and find your next live music experience.
-            </p>
+            <section className="concerts-section">
+                <div className="concerts-section-heading">
+                    <p className="concerts-eyebrow">FIND YOUR SHOW</p>
+                    <h2>Explore live events</h2>
+                    <p>
+                        Search by city to discover concerts near your
+                        destination.
+                    </p>
+                </div>
 
-            <section>
-                <h2>Find Real Concerts</h2>
+                <form
+                    className="concert-search-form"
+                    onSubmit={handleTicketmasterSearch}
+                >
+                    <label htmlFor="concert-city">Where are you going?</label>
 
-                <form onSubmit={handleTicketmasterSearch}>
-                    <label htmlFor="concert-city">City</label>
+                    <div className="concert-search-controls">
+                        <input
+                            id="concert-city"
+                            type="text"
+                            value={city}
+                            onChange={(event) => setCity(event.target.value)}
+                            placeholder="Enter a city (e.g., Tampa)"
+                            autoComplete="address-level2"
+                            required
+                        />
 
-                    <input
-                        id="concert-city"
-                        type="text"
-                        value={city}
-                        onChange={(event) => setCity(event.target.value)}
-                        required
-                    />
-
-                    <button
-                        type="submit"
-                        disabled={ticketmasterLoading}
-                    >
-                        {ticketmasterLoading
-                            ? "Searching..."
-                            : "Search Events"}
-                    </button>
+                        <button
+                            className="concert-search-button"
+                            type="submit"
+                            disabled={ticketmasterLoading}
+                        >
+                            {ticketmasterLoading
+                                ? "Searching..."
+                                : "Search events"}
+                        </button>
+                    </div>
                 </form>
 
                 {ticketmasterError && (
-                    <p role="alert">{ticketmasterError}</p>
+                    <p className="concerts-error" role="alert">
+                        {ticketmasterError}
+                    </p>
                 )}
 
                 {ticketmasterEvents.length > 0 && (
                     <div className="concert-grid">
                         {ticketmasterEvents.map((event) => (
-                            <ConcertCard
-                                key={event.id}
-                                event={event}
-                            />
+                            <ConcertCard key={event.id} event={event} />
                         ))}
                     </div>
                 )}
             </section>
 
-            <section>
-                <h2>Saved in Melody Flow</h2>
+            <section className="concerts-section saved-concerts-section">
+                <div className="concerts-section-heading">
+                    <p className="concerts-eyebrow">KEEP THE PLANS</p>
+                    <h2>Saved concerts</h2>
+                    <p>The shows you have saved for later.</p>
+                </div>
+
+                {removeError && (
+                    <p className="concerts-error" role="alert">
+                        {removeError}
+                    </p>
+                )}
 
                 {concerts.length === 0 ? (
-                    <p>No concerts saved in our database yet.</p>
+                    <div className="concerts-empty-state">
+                        <h3>No concerts saved yet</h3>
+                        <p>
+                            Your saved concerts will appear here when you add
+                            them to your collection.
+                        </p>
+                    </div>
                 ) : (
                     <div className="concert-grid">
-                        {concerts.map((concert) => (
-                            <article
-                                key={concert.id}
-                                className="concert-card"
-                            >
-                                <h3>{concert.name}</h3>
+                        {concerts.map((savedConcert) => {
+                            const concert = savedConcert.concert;
 
-                                {concert.artist && (
-                                    <p>
-                                        Artist: {concert.artist.name}
-                                    </p>
-                                )}
+                            if (!concert) {
+                                return null;
+                            }
 
-                                {concert.venue && (
-                                    <p>
-                                        Venue: {concert.venue.name}
-                                        {concert.venue.city
-                                            ? `, ${concert.venue.city}`
-                                            : ""}
-                                    </p>
-                                )}
+                            return (
+                                <article
+                                    key={savedConcert.id}
+                                    className="concert-card"
+                                >
+                                    <div className="concert-card-content">
+                                        <p className="concert-card-label">
+                                            SAVED SHOW
+                                        </p>
 
-                                {concert.eventDate && (
-                                    <p>
-                                        Date:{" "}
-                                        {new Date(
-                                            concert.eventDate
-                                        ).toLocaleString("en-US", {
-                                            dateStyle: "long",
-                                            timeStyle: "short",
-                                        })}
-                                    </p>
-                                )}
+                                        <h3>{concert.name}</h3>
 
-                                {concert.ticketUrl && (
-                                    <p>
-                                        <a
-                                            href={concert.ticketUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            View Tickets
-                                        </a>
-                                    </p>
-                                )}
-                            </article>
-                        ))}
+                                        {concert.artist && (
+                                            <p>
+                                                <strong>Artist:</strong>{" "}
+                                                {concert.artist.name}
+                                            </p>
+                                        )}
+
+                                        {concert.venue && (
+                                            <p>
+                                                <strong>Venue:</strong>{" "}
+                                                {concert.venue.name}
+                                                {concert.venue.city
+                                                    ? `, ${concert.venue.city}`
+                                                    : ""}
+                                            </p>
+                                        )}
+
+                                        {concert.eventDate && (
+                                            <p>
+                                                <strong>Date:</strong>{" "}
+                                                {new Date(
+                                                    concert.eventDate
+                                                ).toLocaleString("en-US", {
+                                                    dateStyle: "long",
+                                                    timeStyle: "short",
+                                                })}
+                                            </p>
+                                        )}
+
+                                        {concert.ticketUrl && (
+                                            <a
+                                                className="concert-ticket-link"
+                                                href={concert.ticketUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                View tickets →
+                                            </a>
+                                        )}
+
+                                        <div className="saved-concert-actions">
+                                            <Button
+                                                onClick={() => navigate("/plan")}
+                                                variant="primary"
+                                            >
+                                                Plan this concert →
+                                            </Button>
+
+                                            <Button
+                                                onClick={() => handleRemoveConcert(savedConcert.id)}
+                                                disabled={removingId === savedConcert.id}
+                                                variant="danger"
+                                            >
+                                                {removingId === savedConcert.id
+                                                    ? "Removing..."
+                                                    : "Remove saved concert"}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </article>
+                            );
+                        })}
                     </div>
                 )}
             </section>

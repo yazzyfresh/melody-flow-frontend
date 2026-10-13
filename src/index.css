@@ -1,20 +1,33 @@
-
+/* Global reset */
 * {
   box-sizing: border-box;
 }
 
 :root {
   font-family: Inter, "Helvetica Neue", Arial, sans-serif;
-  color: #f2eee8;
-  background: #55004f;
+  color: #292725;
+  background: #f5f0e7;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color-background: #f5f0e7;
+  --color-surface: #fffdf8;
+  --color-text: #292725;
+  --color-muted: #756d64;
+  --color-accent: #722f3e;
+  --color-accent-hover: #592330;
+  --color-border: #ded5c8;
+  --color-highlight: #d8a16b;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text);
 }
 
 a {
@@ -27,45 +40,56 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-.home-page {
-  width: min(1120px, 100% - 40px);
-  margin: 0 auto;
-  padding: 64px 0;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
-/* Home page introduction */
+/* Homepage layout */
+.home-page {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 48px 0 72px;
+}
+
+/* Homepage introduction */
 .hero {
-  padding: 64px 0 80px;
+  padding: 64px 0 76px;
 }
 
 .eyebrow {
-  color: #04914a;
-  font-size: 0.78rem;
+  color: var(--color-accent);
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
 }
 
 .hero h1 {
+  max-width: 850px;
   margin: 20px 0;
-  font-size: clamp(2.5rem, 7vw, 5rem);
-  line-height: 1.05;
-  letter-spacing: -0.055em;
-  font-weight: 750;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  font-weight: 700;
 }
 
 .hero-description {
-  max-width: 600px;
-  color: #bdb5aa;
-  font-size: 1.08rem;
+  max-width: 590px;
+  color: var(--color-muted);
+  font-size: 1.05rem;
   line-height: 1.8;
 }
 
-/* Home page buttons */
+/* Homepage buttons */
 .home-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 32px;
+  gap: 12px;
+  margin-top: 30px;
 }
 
 .button-primary,
@@ -74,95 +98,257 @@ a {
   align-items: center;
   justify-content: center;
   min-height: 46px;
-  padding: 0 22px;
-  border-radius: 7px;
-  font-weight: 700;
-  transition: transform 0.2s, background 0.2s;
+  padding: 0 21px;
+  border-radius: 4px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+          background-color 0.18s ease,
+          color 0.18s ease,
+          border-color 0.18s ease;
 }
 
 .button-primary {
-  color: #171310;
-  background: #fbfbfb;
+  color: #fffdf8;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
 }
 
 .button-primary:hover {
-  background: #f08a62;
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
 }
 
 .button-secondary {
-  color: #f2eee8;
-  border: 1px solid #494139;
-  background: #211e1a;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  background: transparent;
 }
 
 .button-secondary:hover {
-  background: #302922;
+  background: #ebe3d7;
+  border-color: #c7b8a6;
 }
 
-.button-primary:hover,
-.button-secondary:hover {
-  transform: translateY(-2px);
-}
-
-/* Feature cards */
+/* Homepage features */
 .features h2 {
-  margin-bottom: 24px;
-  font-size: 1.7rem;
+  margin-bottom: 22px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 18px;
 }
 
 .feature-card {
   padding: 26px;
-  border: 1px solid #39332d;
-  border-radius: 10px;
-  background: #1d1a17;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
 }
 
 .feature-icon {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .feature-card h3 {
-  margin-bottom: 10px;
-  font-size: 1.25rem;
+  margin: 16px 0 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .feature-card p {
   min-height: 84px;
-  color: #bdb5aa;
+  color: var(--color-muted);
   line-height: 1.7;
 }
 
 .feature-card a {
   display: inline-block;
   margin-top: 12px;
-  color: #e87850;
+  color: var(--color-accent);
   font-weight: 700;
 }
 
 .feature-card a:hover {
-  color: #f08a62;
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Shared application pages */
+.page {
+  width: min(1000px, calc(100% - 48px));
+  margin: 40px auto 72px;
+  padding: 0;
+  color: var(--color-text);
+}
+
+.page h1,
+.page h2,
+.page h3 {
+  color: var(--color-text);
+}
+
+.page h1 {
+  margin: 0 0 10px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.page p {
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+/* Content sections */
+.card {
+  margin: 22px 0;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+}
+
+/* Form labels */
+.page label {
+  display: block;
+  margin: 14px 0 7px;
+  color: var(--color-text);
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+/* Form fields */
+.page input,
+.page select,
+.page textarea {
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #cfc4b6;
+  border-radius: 4px;
+  background: #fffefa;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.page textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.page input::placeholder,
+.page textarea::placeholder {
+  color: #93887d;
+}
+
+.page input:focus,
+.page select:focus,
+.page textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+/* Buttons on application pages */
+.page button {
+  min-height: 42px;
+  padding: 10px 17px;
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  background: var(--color-accent);
+  color: #fffdf8;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+          background-color 0.18s ease,
+          border-color 0.18s ease;
+}
+
+.page button:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.page button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Tables */
+.page table {
+  width: 100%;
+  margin-top: 16px;
+  border-collapse: collapse;
+  background: var(--color-surface);
+}
+
+.page th,
+.page td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.page th {
+  background: #eee6da;
+  color: #51473f;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.page tr:last-child td {
+  border-bottom: none;
+}
+
+.page .card {
+  overflow-x: auto;
 }
 
 /* Keyboard accessibility */
-a:focus-visible {
-  outline: 3px solid #e87850;
-  outline-offset: 4px;
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--color-highlight);
+  outline-offset: 3px;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 /* Mobile layout */
 @media (max-width: 700px) {
   .home-page {
-    padding-top: 28px;
+    width: calc(100% - 32px);
+    padding-top: 24px;
   }
 
   .hero {
-    padding: 40px 0 56px;
+    padding: 42px 0 52px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 12vw, 4rem);
   }
 
   .feature-grid {
@@ -177,89 +363,144 @@ a:focus-visible {
     flex-direction: column;
     align-items: stretch;
   }
+
+  .page {
+    width: calc(100% - 32px);
+    margin-top: 28px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .page th,
+  .page td {
+    padding: 10px;
+    white-space: nowrap;
+  }
 }
 
-
-/* Basic page styling */
-.page {
-  max-width: 1000px;
-  margin: 30px auto;
-  padding: 20px;
-  color: #222;
-  font-family: Arial, sans-serif;
-}
-
-.page h1 {
-  margin-bottom: 8px;
-}
-
-.page p {
-  color: #555;
-  line-height: 1.5;
-}
-
-/* White sections */
-.card {
-  background: white;
-  padding: 20px;
-  margin: 20px 0;
-  border: 1px solid #ddd;
+/* Save Concert button */
+.concert-card-content button {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 11px 18px;
+  border: 1px solid #702d3c;
   border-radius: 8px;
-}
-
-/* Form labels */
-.page label {
-  display: block;
-  margin: 12px 0 6px;
-  font-weight: bold;
-}
-
-/* Form fields */
-.page input,
-.page select {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 15px;
-}
-
-/* Buttons */
-.page button {
-  padding: 10px 16px;
-  background: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  background-color: #702d3c;
+  color: #fffaf5;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.page button:hover {
-  background: #b32a2a;
+.concert-card-content button:hover:not(:disabled) {
+  background-color: #54202d;
+  transform: translateY(-2px);
 }
 
-/* Expense table */
-.page table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+.concert-card-content button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
-.page th,
-.page td {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+.concert-card-content [role="status"] {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #54202d;
 }
 
-.page th {
-  background: #f2f2f2;
-  font-weight: bold;
+/* Add space between ticket link and save button */
+.concert-card-content > a {
+  display: inline-block;
+  margin-bottom: 16px;
 }
 
-/* Keep the table usable on small screens */
-.page .card {
-  overflow-x: auto;
+.concert-card-content > button {
+  display: block;
+  margin-top: 8px;
+}
+
+
+/* ========================================
+   MelodyFlow reusable button styles
+   Added without removing existing styles
+   ======================================== */
+
+/* Shared reusable button base */
+.concert-card-content .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  margin: 8px 8px 0 0;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+          background-color 0.18s ease,
+          color 0.18s ease,
+          border-color 0.18s ease,
+          transform 0.18s ease;
+}
+
+/* Main action: Plan this concert */
+.concert-card-content .button-primary {
+  color: #fffdf8;
+  background-color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.concert-card-content .button-primary:hover:not(:disabled) {
+  color: #fffdf8;
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Destructive action: Remove saved concert */
+.concert-card-content .button-danger {
+  color: #a33d3d;
+  background-color: transparent;
+  border: 1px solid #b94a48;
+}
+
+.concert-card-content .button-danger:hover:not(:disabled) {
+  color: #8d2929;
+  background-color: #fbeDEC;
+  border-color: #a33d3d;
+}
+
+/* Disabled buttons */
+.concert-card-content .button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Keyboard accessibility */
+.concert-card-content .button:focus-visible {
+  outline: 3px solid var(--color-highlight);
+  outline-offset: 3px;
+}
+
+/* Stack buttons neatly on small screens */
+@media (max-width: 480px) {
+  .concert-card-content .button {
+    margin-right: 6px;
+    padding: 10px 12px;
+  }
+}
+
+.saved-concert-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
 }

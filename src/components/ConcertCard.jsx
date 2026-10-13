@@ -1,5 +1,31 @@
+import { useState } from "react";
+import {
+    saveConcert,
+    saveTicketmasterEvent
+} from "../services/concertService";
 
 function ConcertCard({ event }) {
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState("");
+
+    async function handleSave() {
+        setSaving(true);
+        setMessage("");
+
+        try {
+            // First, save the Ticketmaster event to our concerts table.
+            const concert = await saveTicketmasterEvent(event);
+
+            // Next, save that concert to the user's saved concerts.
+            await saveConcert(concert.id);
+
+            setMessage("Concert saved successfully!");
+        } catch (error) {
+            setMessage(error.message || "Could not save concert.");
+        } finally {
+            setSaving(false);
+        }
+    }
     const venue = event._embedded?.venues?.[0];
     const attraction = event._embedded?.attractions?.[0];
 
@@ -32,17 +58,13 @@ function ConcertCard({ event }) {
                 <h3>{event.name}</h3>
 
                 {attraction?.name && (
-                    <p>
-                        <strong>Artist:</strong> {attraction.name}
-                    </p>
+                    <p><strong>Artist:</strong> {attraction.name}</p>
                 )}
 
                 {venue?.name && (
                     <p>
                         <strong>Venue:</strong> {venue.name}
-                        {venue.city?.name
-                            ? `, ${venue.city.name}`
-                            : ""}
+                        {venue.city?.name ? `, ${venue.city.name}` : ""}
                     </p>
                 )}
 
@@ -67,6 +89,16 @@ function ConcertCard({ event }) {
                         View Tickets
                     </a>
                 )}
+
+                <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={saving}
+                >
+                    {saving ? "Saving..." : "Save Concert"}
+                </button>
+
+                {message && <p role="status">{message}</p>}
             </div>
         </article>
     );

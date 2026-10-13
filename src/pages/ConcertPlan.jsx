@@ -1,5 +1,6 @@
-
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import { getExpenses } from "../services/ExpenseService";
 import {
     getConcertPlan,
@@ -8,15 +9,22 @@ import {
 
 function ConcertPlan() {
     const [planId] = useState(1);
+
+    const location = useLocation();
+    const selectedConcert = location.state?.concert;
+    const savedConcertId = location.state?.savedConcertId;
+
     const [budget, setBudget] = useState("500");
     const [savedBudget, setSavedBudget] = useState(500);
     const [expenses, setExpenses] = useState([]);
+
     const [ticketCost, setTicketCost] = useState("150");
     const [travelCost, setTravelCost] = useState("50");
     const [hotelCost, setHotelCost] = useState("100");
     const [parkingCost, setParkingCost] = useState("25");
-    const [foodCost, setFoodCost] = useState("40");
-    const [merchandiseCost, setMerchandiseCost] = useState("35");
+    const [foodCost, setFoodCost] = useState("35");
+    const [merchandiseCost, setMerchandiseCost] = useState("50");
+
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
@@ -32,7 +40,9 @@ function ConcertPlan() {
                 setSavedBudget(Number(planData.budget));
                 setExpenses(expenseData);
             } catch (err) {
-                setError("Could not load your saved plan or expenses.");
+                setError(
+                    "Could not load your saved plan or expenses."
+                );
                 console.error(err);
             }
         }
@@ -49,31 +59,45 @@ function ConcertPlan() {
         Number(merchandiseCost || 0);
 
     const actualSpent = expenses.reduce(
-        (total, expense) => total + Number(expense.amount || 0),
+        (total, expense) =>
+            total + Number(expense.amount || 0),
         0
     );
 
-    const estimatedRemaining = Number(budget || 0) - estimatedTotal;
-    const actualRemaining = savedBudget - actualSpent;
+    const estimatedRemaining =
+        Number(budget || 0) - estimatedTotal;
+
+    const actualRemaining =
+        savedBudget - actualSpent;
 
     async function handleSaveBudget(event) {
         event.preventDefault();
+
         setMessage("");
         setError("");
 
-        if (budget.trim() === "" || Number(budget) < 0) {
+        if (
+            budget.trim() === "" ||
+            !Number.isFinite(Number(budget)) ||
+            Number(budget) < 0
+        ) {
             setError("Enter a valid budget amount.");
             return;
         }
 
         try {
-            const updatedPlan = await updateConcertPlanBudget(planId, budget);
+            const updatedPlan = await updateConcertPlanBudget(
+                planId,
+                budget
+            );
 
             setSavedBudget(Number(updatedPlan.budget));
             setBudget(String(updatedPlan.budget));
             setMessage("Budget saved successfully!");
         } catch (err) {
-            setError("Could not save your budget. Check that the backend is running.");
+            setError(
+                "Could not save your budget. Check that the backend is running."
+            );
             console.error(err);
         }
     }
@@ -81,28 +105,86 @@ function ConcertPlan() {
     return (
         <div className="page">
             <h1>Concert Budget Planner</h1>
-            <p>Plan your concert costs and keep track of your spending.</p>
+
+            <p>
+                Plan your concert costs and keep track of your spending.
+            </p>
+
+            {selectedConcert && (
+                <section className="card">
+                    <h2>Planning for: {selectedConcert.name}</h2>
+
+                    {selectedConcert.artist && (
+                        <p>
+                            <strong>Artist:</strong>{" "}
+                            {selectedConcert.artist.name}
+                        </p>
+                    )}
+
+                    {selectedConcert.venue && (
+                        <p>
+                            <strong>Venue:</strong>{" "}
+                            {selectedConcert.venue.name}
+                            {selectedConcert.venue.city
+                                ? `, ${selectedConcert.venue.city}`
+                                : ""}
+                        </p>
+                    )}
+
+                    {selectedConcert.eventDate && (
+                        <p>
+                            <strong>Date:</strong>{" "}
+                            {new Date(
+                                selectedConcert.eventDate
+                            ).toLocaleString("en-US", {
+                                dateStyle: "long",
+                                timeStyle: "short",
+                            })}
+                        </p>
+                    )}
+
+                    {savedConcertId && (
+                        <p>
+                            <strong>Saved concert ID:</strong>{" "}
+                            {savedConcertId}
+                        </p>
+                    )}
+                </section>
+            )}
 
             {message && <p>{message}</p>}
+
             {error && <p role="alert">{error}</p>}
 
             <section className="card">
                 <h2>Set Your Budget</h2>
 
                 <form onSubmit={handleSaveBudget}>
-                    <label htmlFor="budget">Total budget ($)</label>
+                    <label htmlFor="budget">
+                        Total budget ($)
+                    </label>
+
                     <input
                         id="budget"
                         type="number"
                         min="0"
                         step="0.01"
                         value={budget}
-                        onChange={(event) => setBudget(event.target.value)}
+                        onChange={(event) =>
+                            setBudget(event.target.value)
+                        }
                         required
                     />
 
-                    <button type="submit">Save Budget</button>
+                    <button type="submit">
+                        Save Budget
+                    </button>
                 </form>
+
+                <h3>
+                    Actual Budget Remaining: $
+                    {actualRemaining.toFixed(2)}
+                </h3>
             </section>
 
             <section className="card">
@@ -115,7 +197,9 @@ function ConcertPlan() {
                     min="0"
                     step="0.01"
                     value={ticketCost}
-                    onChange={(event) => setTicketCost(event.target.value)}
+                    onChange={(event) =>
+                        setTicketCost(event.target.value)
+                    }
                 />
 
                 <label htmlFor="travel">Travel ($)</label>
@@ -125,7 +209,9 @@ function ConcertPlan() {
                     min="0"
                     step="0.01"
                     value={travelCost}
-                    onChange={(event) => setTravelCost(event.target.value)}
+                    onChange={(event) =>
+                        setTravelCost(event.target.value)
+                    }
                 />
 
                 <label htmlFor="hotel">Hotel ($)</label>
@@ -135,7 +221,9 @@ function ConcertPlan() {
                     min="0"
                     step="0.01"
                     value={hotelCost}
-                    onChange={(event) => setHotelCost(event.target.value)}
+                    onChange={(event) =>
+                        setHotelCost(event.target.value)
+                    }
                 />
 
                 <label htmlFor="parking">Parking ($)</label>
@@ -145,7 +233,9 @@ function ConcertPlan() {
                     min="0"
                     step="0.01"
                     value={parkingCost}
-                    onChange={(event) => setParkingCost(event.target.value)}
+                    onChange={(event) =>
+                        setParkingCost(event.target.value)
+                    }
                 />
 
                 <label htmlFor="food">Food ($)</label>
@@ -155,31 +245,49 @@ function ConcertPlan() {
                     min="0"
                     step="0.01"
                     value={foodCost}
-                    onChange={(event) => setFoodCost(event.target.value)}
+                    onChange={(event) =>
+                        setFoodCost(event.target.value)
+                    }
                 />
 
-                <label htmlFor="merchandise">Merchandise ($)</label>
+                <label htmlFor="merchandise">
+                    Merchandise ($)
+                </label>
                 <input
                     id="merchandise"
                     type="number"
                     min="0"
                     step="0.01"
                     value={merchandiseCost}
-                    onChange={(event) => setMerchandiseCost(event.target.value)}
+                    onChange={(event) =>
+                        setMerchandiseCost(event.target.value)
+                    }
                 />
 
-                <h3>Estimated Total: ${estimatedTotal.toFixed(2)}</h3>
-                <h3>Estimated Remaining: ${estimatedRemaining.toFixed(2)}</h3>
+                <h3>
+                    Estimated Total: $
+                    {estimatedTotal.toFixed(2)}
+                </h3>
+
+                <h3>
+                    Estimated Remaining: $
+                    {estimatedRemaining.toFixed(2)}
+                </h3>
             </section>
 
             <section className="card">
                 <h2>Actual Spending</h2>
-                <p>Budget: ${savedBudget.toFixed(2)}</p>
-                <p>Total Spent: ${actualSpent.toFixed(2)}</p>
-                <p>Remaining: ${actualRemaining.toFixed(2)}</p>
+
+                <p>
+                    Total Spent: $
+                    {actualSpent.toFixed(2)}
+                </p>
 
                 {expenses.length === 0 ? (
-                    <p>No expenses recorded yet. Add expenses on the Expenses page.</p>
+                    <p>
+                        No expenses recorded yet. Add expenses on the
+                        Expenses page.
+                    </p>
                 ) : (
                     <table>
                         <thead>
@@ -190,13 +298,19 @@ function ConcertPlan() {
                             <th>Amount</th>
                         </tr>
                         </thead>
+
                         <tbody>
                         {expenses.map((expense) => (
                             <tr key={expense.id}>
                                 <td>{expense.category}</td>
                                 <td>{expense.description}</td>
                                 <td>{expense.expenseDate}</td>
-                                <td>${Number(expense.amount).toFixed(2)}</td>
+                                <td>
+                                    $
+                                    {Number(
+                                        expense.amount
+                                    ).toFixed(2)}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
