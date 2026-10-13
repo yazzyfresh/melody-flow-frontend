@@ -1,16 +1,60 @@
-# React + Vite
+# MelodyFlow Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+MelodyFlow is a concert planning and budgeting application designed to help users discover concerts, save events, organize their concert plans, and manage expenses in one place.
 
-Currently, two official plugins are available:
+## Tech Stack
+- **React** — Builds the user interface using reusable components.
+- **JavaScript** — Handles application logic and interactivity.
+- **CSS** — Styles the application and creates a consistent visual experience.
+- **Vite** — Provides the development server and build tools.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
+- Browse and discover concerts and artists.
+- View concert information.
+- Save concerts for future planning.
+- Organize concert plans, including tickets, travel, hotels, parking, food, and merchandise.
+- Set budgets and track expenses.
+- View a concert-focused interface with a consistent design and responsive layout.
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js
+- npm
 
-## Expanding the Oxlint configuration
+### Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. Navigate to the frontend project directory.
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open the local URL provided by Vite in your browser.
+
+## Project Structure
+
+- `src/` — Main application source code.
+- `src/components/` — Reusable UI components, if organized separately.
+- `src/assets/` — Images and other static assets.
+- `src/App.jsx` — Main application component.
+- `src/index.css` or other CSS files — Application styling.
+- `public/` — Static files served directly by Vite.
+
+*Actual filenames and folders may vary depending on the current project structure.*
+
+## Design
+
+MelodyFlow uses a warm, neutral color palette with burgundy accents, soft cream backgrounds, and clean typography to create a cohesive concert-planning experience.
+
+## Project Status
+
+The frontend is under active development, with ongoing work to connect the user interface to the Spring Boot backend and integrate concert discovery data.
+
